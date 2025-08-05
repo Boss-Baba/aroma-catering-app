@@ -11,7 +11,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 // --- Firebase Configuration ---
 // This configuration will be automatically populated by the environment.
 const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'aroma-catering-app';
 
 // --- Icon Components (using SVG for a clean, dependency-free approach) ---
 const BriefcaseIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect x="2" y="6" width="20" height="14" rx="2"/></svg>;
@@ -53,36 +52,28 @@ function App() {
 
     // --- Firebase Initialization and Auth ---
     useEffect(() => {
-        try {
-            const app = initializeApp(firebaseConfig);
-            const firestore = getFirestore(app);
-            const authInstance = getAuth(app);
-            
-            setDb(firestore);
-            setAuth(authInstance);
+    try {
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+        const authInstance = getAuth(app);
 
-            const unsubscribe = onAuthStateChanged(authInstance, async (user) => {
-                if (user) {
-                    setUserId(user.uid);
-                } else {
-                    try {
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(authInstance, __initial_auth_token);
-                        } else {
-                            await signInAnonymously(authInstance);
-                        }
-                    } catch (error) {
-                        console.error("Authentication Error:", error);
-                    }
-                }
-                setIsAuthReady(true);
-            });
-            return () => unsubscribe();
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
+        setDb(firestore);
+        setAuth(authInstance);
+
+        const unsubscribe = onAuthStateChanged(authInstance, async (user) => {
+            if (user) {
+                setUserId(user.uid);
+            } else {
+                await signInAnonymously(authInstance);
+            }
             setIsAuthReady(true);
-        }
-    }, []);
+        });
+        return () => unsubscribe();
+    } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        setIsAuthReady(true);
+    }
+}, []);
 
     // --- Data Fetching from Firestore ---
     useEffect(() => {
