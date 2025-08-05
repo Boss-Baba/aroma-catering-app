@@ -8,7 +8,19 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// --- Firebase Configuration ---
+// --- Firebase Configuration ---// --- Firebase Configuration ---
+const firebaseConfig = {
+  apiKey: "AIzaSy...your...key",
+  authDomain: "aroma-catering-app.firebaseapp.com",
+  // ... other config properties
+};
+
+const appId = 'aroma-catering-app'; // <-- ADD THIS LINE HERE
+
+// --- Main App Component ---
+function App() {
+//... rest of the code
+
 // This configuration will be automatically populated by the environment.
 const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
 
@@ -73,7 +85,7 @@ function App() {
         console.error("Firebase initialization failed:", error);
         setIsAuthReady(true);
     }
-}, []);
+}, []);opedocke
 
     // --- Data Fetching from Firestore ---
     useEffect(() => {
